@@ -139,7 +139,7 @@ def traverse(tree, root=None):
             yield [param, comment, json.dumps(default)]
 
 
-def gen(chartdir, output_format):
+def gen(chartdir, output_format, credits=True):
     """Generate documentation for a Helm chart.
 
     Generate documentation for a Helm chart given the path to a chart and a
@@ -148,6 +148,7 @@ def gen(chartdir, output_format):
     Args:
         chartdir (str): Path to Helm chart
         output_format (str): Output format (maps to jinja templates in frigate)
+        credits (bool): Show Frigate credits in documentation
 
     Returns:
         str: Rendered documentation for the Helm chart
@@ -155,4 +156,4 @@ def gen(chartdir, output_format):
     """
     chart, values = load_chart(chartdir)
     template = templates.get_template(f"{output_format}.jinja2")
-    return template.render(**chart, values=traverse(values))
+    return template.render(**chart, values=traverse(values), credits=credits)
