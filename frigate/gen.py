@@ -3,15 +3,14 @@ import itertools
 import json
 import os.path
 
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
 
+from frigate import TEMPLATES_PATH
 from frigate.utils import flatten
 
 yaml = YAML()
-
-templates = Environment(loader=PackageLoader("frigate", "templates"))
 
 
 def load_chart(chartdir):
@@ -155,5 +154,6 @@ def gen(chartdir, output_format, credits=True):
 
     """
     chart, values = load_chart(chartdir)
+    templates = Environment(loader=FileSystemLoader([TEMPLATES_PATH]))
     template = templates.get_template(f"{output_format}.jinja2")
     return template.render(**chart, values=traverse(values), credits=credits)

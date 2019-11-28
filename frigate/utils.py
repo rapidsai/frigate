@@ -1,6 +1,7 @@
 import collections.abc
 import os
-import os.path
+
+from frigate import TEMPLATES_PATH
 
 
 def flatten(l):
@@ -33,7 +34,7 @@ def flatten(l):
 
 def list_templates():
     templates = []
-    for template in os.listdir(os.path.join(os.path.dirname(__file__), "templates")):
+    for template in os.listdir(TEMPLATES_PATH):
         [template, _] = template.split(".")
         templates.append(template)
     return templates
