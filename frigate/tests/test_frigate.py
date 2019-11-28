@@ -95,4 +95,4 @@ def test_traversal(nginx_chart):
     output = list(traverse(values))
 
     assert len(output) == 17
-    assert ["replicaCount", "", 1] in output
+    assert ["replicaCount", "Number of nginx replicas", 1] in output

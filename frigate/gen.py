@@ -1,21 +1,24 @@
 from collections import OrderedDict
 import itertools
 import os.path
+from jinja2 import Environment, PackageLoader
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
 from frigate.utils import flatten
 
 yaml = YAML()
 
+templates = Environment(loader=PackageLoader("frigate", "templates"))
+
 
 def load_chart(chartdir):
-    """Load the yaml information from a helm chart directory.
+    """Load the yaml information from a Helm chart directory.
 
-    Load in the `Chart.yaml` and `values.yaml` files from a helm
+    Load in the `Chart.yaml` and `values.yaml` files from a Helm
     chart.
 
     Args:
-        chartdir (str): Path to the helm chart.
+        chartdir (str): Path to the Helm chart.
 
     Returns:
         chart (dict): Contents of `Chart.yaml` loaded into a dict.
@@ -64,10 +67,52 @@ def get_comment(tree, key):
 
 
 def clean_comment(comment):
+    """Remove comment formatting.
+
+    Strip a comment down and turn it into a standalone human readable sentence.
+
+    Examples:
+        Strip down a comment
+
+        >>> clean_comment("# hello world")
+        "Hello world"
+
+    Args:
+        comment (str): Comment to clean
+
+    Returns:
+        str: Cleaned sentence
+
+    """
     return comment.strip("# ").capitalize()
 
 
 def traverse(tree, root=None):
+    """Iterate over a tree of configuration and extract all information.
+
+    Iterate over nested configuration and extract parameters, comments and values.
+
+    Parameters will be fully namespaced. Descriptions will be extracted from the inline
+    comment. Values will be taken as the default value.
+
+    Examples:
+        Traversing the following YAML config would yield this list.
+
+        my:
+          config:
+            hello: world  # comment to describe the option
+
+        >>> traverse(tree)
+        ['my.config.hello', 'Comment to describe the option', 'world']
+
+    Args:
+        comment (ruamel.yaml.comments.CommentedMap): Tree of config to traverse.
+        root (str, optional): The root of the namespace we are currently at. Used for recursion.
+
+    Yields:
+        list(param, comment, value): Each namespaced parameter (str), the comment (str) and value (obj).
+
+    """
     if root is None:
         root = []
     for key in tree:
@@ -97,16 +142,20 @@ def traverse(tree, root=None):
             yield [param, comment, default]
 
 
-def format_template(values):
-    print(
-        """| Parameter                | Description             | Default        |
-| ------------------------ | ----------------------- | -------------- |"""
-    )
-    for (param, comment, default) in values:
-        print(f"| `{param}` | {comment} | {default} |")
+def gen(chartdir, output_format):
+    """Generate documentation for a Helm chart.
 
+    Generate documentation for a Helm chart given the path to a chart and a
+    format to write out in.
 
-def gen(chartdir):
+    Args:
+        chartdir (str): Path to Helm chart
+        output_format (str): Output format (maps to jinja templates in frigate)
+
+    Returns:
+        str: Rendered documentation for the Helm chart
+
+    """
     chart, values = load_chart(chartdir)
-
-    format_template(traverse(values))
+    template = templates.get_template(f"{output_format}.tpl")
+    return template.render(**chart, values=traverse(values))

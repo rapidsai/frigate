@@ -1,2 +1,4 @@
 include versioneer.py
 include frigate/_version.py
+include frigate/templates/*.tpl
+exclude frigate/tests
