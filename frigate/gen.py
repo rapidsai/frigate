@@ -154,5 +154,5 @@ def gen(chartdir, output_format):
 
     """
     chart, values = load_chart(chartdir)
-    template = templates.get_template(f"{output_format}.tpl")
+    template = templates.get_template(f"{output_format}.jinja2")
     return template.render(**chart, values=traverse(values))
