@@ -1,10 +1,17 @@
+{% extends "base.jinja2" %}
+{% block title -%}
 {{ name }}
 ===========
+{% endblock -%}
 
+{% block description -%}
 {{ description }}
+{% endblock -%}
 
+{% block table -%}
 | Parameter                | Description             | Default        |
 | ------------------------ | ----------------------- | -------------- |
 {% for (param, comment, default) in values -%}
 | `{{ param }}` | {{ comment }} | `{{ default }}` |
 {% endfor -%}
+{% endblock -%}

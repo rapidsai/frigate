@@ -1,11 +1,17 @@
+{% extends "base.jinja2" %}
+{% block title -%}
 <h1>
   {{ name }}
 </h1>
+{% endblock -%}
 
+{% block description -%}
 <p>
   {{ description }}
 </p>
+{% endblock -%}
 
+{% block table -%}
 <table style="width:100%">
   <tr>
     <th>Parameter</th>
@@ -20,3 +26,4 @@
   </tr>
   {% endfor -%}
 </table>
+{% endblock -%}
