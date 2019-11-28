@@ -46,17 +46,17 @@ Run Frigate to generate markdown documentation for your new ``hello-world`` char
    | Parameter                | Description             | Default        |
    | ------------------------ | ----------------------- | -------------- |
    | `replicaCount` |  | `1` |
-   | `image.repository` |  | `'nginx'` |
-   | `image.tag` |  | `'stable'` |
-   | `image.pullPolicy` |  | `'IfNotPresent'` |
+   | `image.repository` |  | `"nginx"` |
+   | `image.tag` |  | `"stable"` |
+   | `image.pullPolicy` |  | `"IfNotPresent"` |
    | `imagePullSecrets` |  | `[]` |
-   | `nameOverride` |  | `''` |
-   | `fullnameOverride` |  | `''` |
-   | `service.type` |  | `'ClusterIP'` |
+   | `nameOverride` |  | `""` |
+   | `fullnameOverride` |  | `""` |
+   | `service.type` |  | `"ClusterIP"` |
    | `service.port` |  | `80` |
    | `ingress.enabled` |  | `false` |
    | `ingress.annotations` |  | `{}` |
-   | `ingress.hosts` |  | `[{'host': 'chart-example.local', 'paths': []}]` |
+   | `ingress.hosts` |  | `[{"host": "chart-example.local", "paths": []}]` |
    | `ingress.tls` |  | `[]` |
    | `resources` |  | `{}` |
    | `nodeSelector` |  | `{}` |

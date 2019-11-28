@@ -1,9 +1,12 @@
 from collections import OrderedDict
 import itertools
+import json
 import os.path
+
 from jinja2 import Environment, PackageLoader
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
+
 from frigate.utils import flatten
 
 yaml = YAML()
@@ -127,19 +130,13 @@ def traverse(tree, root=None):
                     (dict(item) if isinstance(item, CommentedMap) else item)
                     for item in default
                 ]
-            if isinstance(default, str):
-                default = f"'{default}'"
-            if isinstance(default, bool):
-                default = "true" if default else "false"
             if isinstance(default, CommentedMap):
-                default = str(dict(default))
-            if default is None:
-                default = "null"
+                default = dict(default)
             comment = ""
             if key in tree.ca.items:
                 comment = get_comment(tree, key)
             param = ".".join(root + [key])
-            yield [param, comment, default]
+            yield [param, comment, json.dumps(default)]
 
 
 def gen(chartdir, output_format):

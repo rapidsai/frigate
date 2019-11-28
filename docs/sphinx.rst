@@ -1,12 +1,12 @@
-Sphinx
-======
+Sphinx extension
+================
 
-Frigate can also automatically document your Helm charts in your Sphinx_ documentation.
+Frigate can also automatically document your Helm charts right in your Sphinx_ documentation.
 
 Setup
 ------
 
-- Install Frigate.
+- `Install Frigate`_.
 
 - Enable the plugin in your Sphinx ``conf.py`` file:
 
@@ -33,3 +33,4 @@ Example
 .. frigate:: ../frigate/tests/mockcharts/nginx
 
 .. _Sphinx: https://www.sphinx-doc.org/
+.. _`Install Frigate`: index.html#installation
