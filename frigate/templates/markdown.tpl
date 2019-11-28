@@ -1,3 +1,8 @@
+{{ name }}
+===========
+
+{{ description }}
+
 | Parameter                | Description             | Default        |
 | ------------------------ | ----------------------- | -------------- |
 {% for (param, comment, default) in values -%}
