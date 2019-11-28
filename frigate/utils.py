@@ -1,4 +1,6 @@
 import collections.abc
+import os
+import os.path
 
 
 def flatten(l):
@@ -27,3 +29,11 @@ def flatten(l):
             yield from flatten(el)
         else:
             yield el
+
+
+def list_templates():
+    templates = []
+    for template in os.listdir(os.path.join(os.path.dirname(__file__), "templates")):
+        [template, _] = template.split(".")
+        templates.append(template)
+    return templates
