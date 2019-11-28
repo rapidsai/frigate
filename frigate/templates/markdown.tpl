@@ -1,5 +1,5 @@
 | Parameter                | Description             | Default        |
 | ------------------------ | ----------------------- | -------------- |
 {% for (param, comment, default) in values -%}
-| `{{ param }}` | {{ comment }} | {{ default }} |
+| `{{ param }}` | {{ comment }} | `{{ default }}` |
 {% endfor -%}

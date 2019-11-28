@@ -132,7 +132,7 @@ def traverse(tree, root=None):
             if isinstance(default, bool):
                 default = "true" if default else "false"
             if isinstance(default, CommentedMap):
-                default = dict(default)
+                default = str(dict(default))
             if default is None:
                 default = "null"
             comment = ""
