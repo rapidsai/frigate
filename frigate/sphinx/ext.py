@@ -28,4 +28,3 @@ class FrigateDirective(rst.Directive):
 
 def setup(app):
     app.add_directive("frigate", FrigateDirective)
-

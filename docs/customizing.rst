@@ -16,7 +16,7 @@ To set the descriptions of each configuration item you need to specify them as c
 
 The above YAML would be rendered like this.
 
-.. code-block::
+.. code-block:: md
 
    | Parameter                | Description             | Default        |
    | ------------------------ | ----------------------- | -------------- |
