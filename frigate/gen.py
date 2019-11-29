@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
 
-from frigate import TEMPLATES_PATH
+from frigate import TEMPLATES_PATH, DOTFILE_NAME
 from frigate.utils import flatten
 
 yaml = YAML()
@@ -154,6 +154,10 @@ def gen(chartdir, output_format, credits=True):
 
     """
     chart, values = load_chart(chartdir)
-    templates = Environment(loader=FileSystemLoader([TEMPLATES_PATH]))
-    template = templates.get_template(f"{output_format}.jinja2")
+    templates = Environment(loader=FileSystemLoader([chartdir, TEMPLATES_PATH]))
+    if os.path.isfile(os.path.join(chartdir, DOTFILE_NAME)):
+        template_name = DOTFILE_NAME
+    else:
+        template_name = f"{output_format}.jinja2"
+    template = templates.get_template(template_name)
     return template.render(**chart, values=traverse(values), credits=credits)

@@ -1,0 +1,50 @@
+# Default values for nginx.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1  # number of nginx pod replicas to create
+
+image:
+  repository: nginx  # docker image name
+  tag: stable  # docke rimage label
+  pullPolicy: IfNotPresent  # kubernetes pull policy
+
+imagePullSecrets: []  # secrets to use for docker registry credentials
+nameOverride: ""  # override the name of the application
+fullnameOverride: ""  # override the name of the chart
+
+service:
+  type: ClusterIP  # nginx service type, could be 'ClusterIP', 'LoadBalancer' or 'NodePort'
+  port: 80  # port to serve on the internal service
+
+ingress:
+  enabled: false  # enable the ingress
+  annotations: {}  # ingress annotations
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:  # hostnames for ingresses and which service paths they should map to
+    - host: chart-example.local
+      paths: []
+
+  tls: []  # TLS secrets and which hosts they should be used for
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}  # resource limits and requests
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}  # node selector config for the nginx pods
+
+tolerations: []  # tolarations for the nginx pods
+
+affinity: {}  # node affinities/antiaffinities for the nginx pods

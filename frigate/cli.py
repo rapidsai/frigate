@@ -22,6 +22,5 @@ def cli():
     "--no-credits", is_flag=True, default=True, help="Disable the Frigate credits",
 )
 def gen(filename, output_format, no_credits):
-    print(no_credits)
     click.echo(frigate.gen.gen(filename, output_format, credits=no_credits))
 

@@ -1,0 +1,14 @@
+{% extends "rst.jinja2" %}
+
+{% block title -%}
+{{ super() }}
+{%- endblock %}
+
+{% block description -%}
+{{ super() }}
+{%- endblock %}
+
+{% block credits %}
+{{ super() }}
+This is an example of a rich chart.
+{%- endblock %}

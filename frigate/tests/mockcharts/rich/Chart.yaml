@@ -1,0 +1,32 @@
+apiVersion: v1
+appVersion: "1.0"
+name: rich
+version: 0.1.0
+description: A rich nginx Helm chart example.
+long_description: |
+    This is the default chart created with ``helm create nginx``.
+    Descriptions have then been added to all items in ``values.yaml`` and a ``.frigate.jinja2`` template has been included to enrich it.
+
+    Frigate has then been used to generate both the ``README.rst`` in that directory as well as the example in the Sphinx docs.
+
+    Generating the README.rst
+    -------------------------
+
+    .. code-block:: console
+
+       $ frigate gen ../frigate/tests/mockcharts/rich > ../frigate/tests/mockcharts/rich/README.rst
+
+    Sphinx docs directive
+    ---------------------
+
+    .. code-block:: rst
+
+       .. frigate:: ../frigate/tests/mockcharts/rich
+
+footnotes: |
+    Footnotes
+    ---------
+
+    It is also possible to include a footnotes section which is placed after the parameters table in your documentation.
+
+    This is a good location for information which you want to include but may not be of primary interest to users.
