@@ -1,4 +1,3 @@
-
 from setuptools import setup, find_packages
 import os
 import versioneer
@@ -25,8 +24,8 @@ setup(
     url="",
     download_url="",
     author="Jacob Tomlinson",
-    author_email="jacob@tom.linson.uk",
-    description="A tool for autogenerating helm documentation..",
+    author_email="jtomlinson@nvidia.com",
+    description="A tool for autogenerating helm documentation.",
     long_description=README,
     long_description_content_type="text/markdown",
     packages=PACKAGES,
