@@ -68,6 +68,12 @@ formats flag you may also provide your own template all together.
 To do this place a valid jinja2 template in your helm chart directory named ``.frigate``. This template will then
 be used instead of any built in templates.
 
+.. code-block:: console
+
+   $ frigate gen hello-world
+
+If the ``hello-world`` chart contains a ``.frigate`` template file this will be used automatically.
+
 Available variables
 ^^^^^^^^^^^^^^^^^^^
 

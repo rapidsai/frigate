@@ -10,4 +10,23 @@ Features:
 - Supports outputting as markdown, reStructuredText and HTML.
 - Sphinx extension for including in Python documentation.
 
+## Installation
+
+```
+$ pip install frigate
+```
+
+## Usage
+
+```
+$ frigate gen path/to/chart
+
+Chart
+==========
+
+Chart description.
+
+...
+```
+
 <!-- TODO: Link to docs once set up on RTD -->
