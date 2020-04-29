@@ -17,9 +17,14 @@ PACKAGES = find_packages(
 with open(os.path.join(HERE, "requirements.txt"), "r") as fh:
     REQUIRES = [line.strip() for line in fh]
 
+if 'GIT_DESCRIBE_TAG' in os.environ:
+    version = os.environ['GIT_DESCRIBE_TAG'] + os.environ.get('VERSION_SUFFIX', '')
+else:
+    version = versioneer.get_version()
+
 setup(
     name=PACKAGE_NAME,
-    version=versioneer.get_version(),
+    version=version,
     license="Apache License 2.0",
     url="",
     download_url="",
