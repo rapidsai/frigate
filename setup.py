@@ -17,8 +17,8 @@ PACKAGES = find_packages(
 with open(os.path.join(HERE, "requirements.txt"), "r") as fh:
     REQUIRES = [line.strip() for line in fh]
 
-if 'GIT_DESCRIBE_TAG' in os.environ:
-    version = os.environ['GIT_DESCRIBE_TAG'] + os.environ.get('VERSION_SUFFIX', '')
+if "GIT_DESCRIBE_TAG" in os.environ:
+    version = os.environ["GIT_DESCRIBE_TAG"] + os.environ.get("VERSION_SUFFIX", "")
 else:
     version = versioneer.get_version()
 
