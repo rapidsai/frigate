@@ -23,4 +23,3 @@ def cli():
 )
 def gen(filename, output_format, no_credits):
     click.echo(frigate.gen.gen(filename, output_format, credits=no_credits))
-

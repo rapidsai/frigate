@@ -4,7 +4,7 @@ import os
 from frigate import TEMPLATES_PATH
 
 
-def flatten(l):
+def flatten(nested_list):
     """Flatten a list of nested lists with unknown depth.
 
     Iterate over nested lists and yield each item sequentially regardless
@@ -23,13 +23,13 @@ def flatten(l):
         obj: Flattened list items.
 
     """
-    for el in l:
-        if isinstance(el, collections.abc.Iterable) and not isinstance(
-            el, (str, bytes)
+    for element in nested_list:
+        if isinstance(element, collections.abc.Iterable) and not isinstance(
+            element, (str, bytes)
         ):
-            yield from flatten(el)
+            yield from flatten(element)
         else:
-            yield el
+            yield element
 
 
 def list_templates():
