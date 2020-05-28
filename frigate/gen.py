@@ -1,5 +1,3 @@
-from collections import OrderedDict
-import itertools
 import json
 import os.path
 
