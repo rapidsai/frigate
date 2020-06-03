@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = "Frigate"
-copyright = "2019, Jacob Tomlinson"
-author = "Jacob Tomlinson"
+copyright = "2020, NVIDIA"
+author = "RAPIDS"
 
 
 # -- General configuration ---------------------------------------------------
