@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2018, NVIDIA CORPORATION.
 
+if [[ "${BUILD_MODE}" != "branch" ]]; then
   echo "Skipping upload"
   return 0
 fi
