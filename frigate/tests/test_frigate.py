@@ -137,7 +137,6 @@ def test_traversal(simple_chart, rich_chart):
 
 
 def test_custom_template(rich_chart_path):
-    from frigate import DOTFILE_NAME
     from frigate.gen import gen
 
     test_phrase = "rich chart"

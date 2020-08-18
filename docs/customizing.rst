@@ -44,7 +44,7 @@ of the list.
      - name: "USERNAME"
        value: "app-username"
 
-.. code-block::
+.. code-block:: md
 
    | Parameter                | Description             | Default        |
    | ------------------------ | ----------------------- | -------------- |
