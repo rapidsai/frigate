@@ -58,7 +58,6 @@ def load_chart_with_dependencies(chartdir, root=None):
     root = [] if root is None else root
     chart, values = load_chart(chartdir, root=root)
     if "dependencies" in chart:
-        # TODO Update chart dependencies
         for dependency in chart["dependencies"]:
             dependency_name = dependency["name"]
             dependency_path = os.path.join(
