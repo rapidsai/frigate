@@ -118,8 +118,6 @@ def test_clean_comment():
 
 
 def test_traversal(simple_chart, rich_chart):
-    from frigate.gen import traverse
-
     _, values = simple_chart
     simple_output = values
 
@@ -161,4 +159,3 @@ def test_squash_duplicates():
 
     assert len(values) == 1
     assert values[0][2] == "world"
-
