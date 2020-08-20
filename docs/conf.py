@@ -2,7 +2,7 @@
 #
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+# https://www.sphinx-doc.org/en/main/usage/configuration.html
 
 # -- Path setup --------------------------------------------------------------
 
@@ -37,8 +37,8 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-# Override master_doc from `contents` to `index`
-master_doc = 'index'
+# Override main_doc from `contents` to `index`
+main_doc = 'index'
 
 # -- Options for HTML output -------------------------------------------------
 
