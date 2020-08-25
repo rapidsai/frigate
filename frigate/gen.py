@@ -166,13 +166,13 @@ def get_comment(tree, key):
 def clean_comment(comment):
     """Remove comment formatting.
 
-    Strip a comment down and turn it into a standalone human readable sentence.
+    Strip a comment.
 
     Examples:
         Strip down a comment
 
         >>> clean_comment("# hello world")
-        "Hello world"
+        "hello world"
 
     Args:
         comment (str): Comment to clean
@@ -181,7 +181,7 @@ def clean_comment(comment):
         str: Cleaned sentence
 
     """
-    return comment.strip("# ").capitalize()
+    return comment.strip("# ")
 
 
 def traverse(tree, root=None):

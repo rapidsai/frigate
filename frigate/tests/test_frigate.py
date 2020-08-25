@@ -62,7 +62,7 @@ def test_get_comment(yaml):
     from frigate.gen import get_comment
 
     tree = yaml.load("hello: world  # this is the comment")
-    assert get_comment(tree, "hello") == "This is the comment"
+    assert get_comment(tree, "hello") == "this is the comment"
 
     tree = yaml.load(
         """
@@ -71,7 +71,7 @@ def test_get_comment(yaml):
     # this is also not the comment
     """
     )
-    assert get_comment(tree, "hello") == "This is the comment"
+    assert get_comment(tree, "hello") == "this is the comment"
 
     tree = yaml.load(
         """
@@ -82,7 +82,7 @@ def test_get_comment(yaml):
     # this is also not the comment
     """
     )
-    assert get_comment(tree, "hello") == "This is the comment"
+    assert get_comment(tree, "hello") == "this is the comment"
 
     tree = yaml.load(
         """
@@ -94,7 +94,7 @@ def test_get_comment(yaml):
     # this is also not the comment
     """
     )
-    assert get_comment(tree, "hello") == "This is the comment"
+    assert get_comment(tree, "hello") == "this is the comment"
 
     tree = yaml.load(
         """
@@ -107,14 +107,17 @@ def test_get_comment(yaml):
     )
     assert get_comment(tree, "hello") == ""
 
+    tree = yaml.load("hello: world  # Use a `LoadBalancer`.")
+    assert get_comment(tree, "hello") == "Use a `LoadBalancer`."
+
 
 def test_clean_comment():
     from frigate.gen import clean_comment
 
-    assert clean_comment("# hello world") == "Hello world"
-    assert clean_comment("hello world") == "Hello world"
-    assert clean_comment("## # ## ## hello world") == "Hello world"
-    assert clean_comment(" # hello world  ") == "Hello world"
+    assert clean_comment("# hello world") == "hello world"
+    assert clean_comment("hello world") == "hello world"
+    assert clean_comment("## # ## ## hello world") == "hello world"
+    assert clean_comment(" # hello world  ") == "hello world"
 
 
 def test_traversal(simple_chart, rich_chart):
@@ -129,7 +132,7 @@ def test_traversal(simple_chart, rich_chart):
 
     assert [
         "replicaCount",
-        "Number of nginx pod replicas to create",
+        "number of nginx pod replicas to create",
         "1",
     ] in rich_output
 
