@@ -145,13 +145,13 @@ you wish to extend and the blocks within the template that you wish to override.
 
 .. code-block:: jinja
 
-   {% extends "markdown.jinja" %}
+   {% extends "markdown.jinja2" %}
 
    {% block title -%}
    # {{ name | upper }}
    {%- endblock %}
 
-The above example would extent the ``markdown`` template and overrides the ``title`` block with an uppercase title.
+The above example would extend the ``markdown`` template and overrides the ``title`` block with an uppercase title.
 
 Templates available to extend:
 
