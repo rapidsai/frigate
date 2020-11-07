@@ -3,7 +3,8 @@ import os.path
 import tempfile
 import shutil
 import subprocess
-
+import datetime
+from json import JSONEncoder
 from jinja2 import Environment, FileSystemLoader
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
@@ -184,6 +185,12 @@ def clean_comment(comment):
     return comment.strip("# ")
 
 
+class DateTimeEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()
+
+
 def traverse(tree, root=None):
     """Iterate over a tree of configuration and extract all information.
 
@@ -230,10 +237,10 @@ def traverse(tree, root=None):
             if key in tree.ca.items:
                 comment = get_comment(tree, key)
             param = ".".join(root + [key])
-            yield [param, comment, json.dumps(default)]
+            yield [param, comment, json.dumps(default, indent=4, sort_keys=True, cls=DateTimeEncoder)]
 
 
-def gen(chartdir, output_format, credits=True, deps=True):
+def gen(chartdir, output_format, credits=True, deps=True, update=True):
     """Generate documentation for a Helm chart.
 
     Generate documentation for a Helm chart given the path to a chart and a
