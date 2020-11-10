@@ -24,7 +24,10 @@ def cli():
 @click.option(
     "--no-deps", is_flag=True, default=True, help="Do not render dependency values",
 )
-def gen(filename, output_format, no_credits, no_deps):
+@click.option(
+    "--no-update", is_flag=True, default=True, help="Do not update the charts",
+)
+def gen(filename, output_format, no_credits, no_deps, no_update):
     click.echo(
-        frigate.gen.gen(filename, output_format, credits=no_credits, deps=no_deps)
+        frigate.gen.gen(filename, output_format, credits=no_credits, deps=no_deps, update=no_update)
     )
