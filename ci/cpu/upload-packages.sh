@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2018, NVIDIA CORPORATION.
+# Copyright (c) 2020, NVIDIA CORPORATION.
 
 if [[ "${BUILD_MODE}" != "branch" ]]; then
   echo "Skipping upload"
@@ -16,7 +16,7 @@ if [ -z "$TWINE_PASSWORD" ]; then
   return 0
 fi
 
-anaconda -t ${MY_UPLOAD_KEY} upload -u ${CONDA_USERNAME:-rapidsai} --label main --skip-existing "`conda build conda/recipes/frigate --output`"
+anaconda -t ${MY_UPLOAD_KEY} upload -u ${CONDA_USERNAME:-rapidsai} --label main --skip-existing "`gpuci_conda_retry build conda/recipes/frigate --output`"
 
 echo "Upload pypi"
 twine upload --skip-existing -u ${TWINE_USERNAME:-rapidsai} dist/*
