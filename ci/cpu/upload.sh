@@ -32,7 +32,7 @@ fi
 ################################################################################
 
 gpuci_logger "Get conda file output locations"
-export FRIGATE_FILE=`gpuci_conda_retry build conda/recipes/frigate --output`
+export FRIGATE_FILE=`conda build conda/recipes/frigate --output`
 
 ################################################################################
 # UPLOAD - Conda packages
