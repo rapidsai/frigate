@@ -54,10 +54,6 @@ conda config --set ssl_verify False
 gpuci_logger "Build conda pkg for frigate"
 gpuci_conda_retry build conda/recipes/frigate --python=$PYTHON
 
-gpuci_logger "Build pip pkg for frigate"
-rm -rf dist/
-python setup.py sdist bdist_wheel
-
 ################################################################################
 # UPLOAD - Packages
 ################################################################################
