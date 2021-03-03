@@ -111,6 +111,13 @@ def test_get_comment(yaml):
     assert get_comment(tree, "hello") == "Use a `LoadBalancer`."
 
 
+def test_get_pipe_string_comment(yaml):
+    from frigate.gen import get_comment
+
+    tree = yaml.load("hello: | # pipe string.\n  world ")
+    assert get_comment(tree, "hello") == "pipe string."
+
+
 def test_clean_comment():
     from frigate.gen import clean_comment
 
