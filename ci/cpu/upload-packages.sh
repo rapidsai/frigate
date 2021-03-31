@@ -1,8 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2018, NVIDIA CORPORATION.
 
-# Restrict uploads to master branch
-if [[ "${GIT_BRANCH}" != "master" ]]; then
+if [[ "${BUILD_MODE}" != "branch" ]]; then
   echo "Skipping upload"
   return 0
 fi

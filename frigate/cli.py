@@ -21,5 +21,10 @@ def cli():
 @click.option(
     "--no-credits", is_flag=True, default=True, help="Disable the Frigate credits",
 )
-def gen(filename, output_format, no_credits):
-    click.echo(frigate.gen.gen(filename, output_format, credits=no_credits))
+@click.option(
+    "--no-deps", is_flag=True, default=True, help="Do not render dependency values",
+)
+def gen(filename, output_format, no_credits, no_deps):
+    click.echo(
+        frigate.gen.gen(filename, output_format, credits=no_credits, deps=no_deps)
+    )
