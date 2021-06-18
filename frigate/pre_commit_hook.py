@@ -4,7 +4,7 @@ from pathlib import Path
 from frigate.gen import gen
 
 
-def main(output_file, format, credits, deps):
+def main(output_file, format, credits=True, deps=True):
     """Write a README file for discovered Helm chart(s).
 
 
