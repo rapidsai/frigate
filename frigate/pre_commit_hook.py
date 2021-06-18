@@ -3,6 +3,18 @@ from pathlib import Path
 
 from frigate.gen import gen
 
+    """[pre-commit-hook]
+    Add features, fix bugs locally with
+    ```
+    pre-commit try-repo /path/to/frigate --verbose --all-files
+    ```
+
+    Note : pre-commit creates a virtualenv with the hook, so all codes needs
+    to be committed locally, to be seen on the test repository
+
+    """
+
+
 
 def main(output_file, format, credits=True, deps=True):
     """Write a README file for discovered Helm chart(s).

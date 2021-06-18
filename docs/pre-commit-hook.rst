@@ -5,7 +5,7 @@ Pre-commit hook
 Usage with the pre-commit git hooks framework
 ----------------------------------------------
 
-**Frigate** can be included as a hook for pre-commit. The easiest way to get started is to add this configuration to your ``.pre-commit-config.yaml``:
+**Frigate** can be included as a hook for `pre-commit <https://pre-commit.com>`_. The easiest way to get started is to add this configuration to your ``.pre-commit-config.yaml``:
 
 
 .. code-block:: yaml
