@@ -3,16 +3,17 @@ from pathlib import Path
 
 from frigate.gen import gen
 
-    """[pre-commit-hook]
-    Add features, fix bugs locally with
-    ```
-    pre-commit try-repo /path/to/frigate --verbose --all-files
-    ```
+"""[pre-commit-hook]
+Add features, fix bugs locally with :
+```
+pre-commit try-repo /path/to/frigate --verbose --all-files
+```
 
-    Note : pre-commit creates a virtualenv with the hook, so all codes needs
-    to be committed locally, to be seen on the test repository
+https://pre-commit.com/#developing-hooks-interactively
 
-    """
+Note : pre-commit creates a virtualenv with the hook
+
+"""
 
 
 
