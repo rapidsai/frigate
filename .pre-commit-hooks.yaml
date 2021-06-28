@@ -1,0 +1,6 @@
+-   id: frigate
+    name: frigate
+    entry: frigate hook
+    language: python
+    require_serial: true
+    always_run: true

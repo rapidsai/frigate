@@ -30,3 +30,39 @@ Chart description.
 ```
 
 <!-- TODO: Link to docs once set up on RTD -->
+
+
+
+### Pre-commit-hook
+
+Into the repository you want to have the pre-commit hook installed, run:
+
+
+```
+cat <<EOF > .pre-commit-config.yaml
+repos:
+- repo: https://github.com/rapidsai/frigate/
+  rev: v0.4.0 #  pre-commit autoupdate  - to keep the version up to date
+  hooks:
+    - id: frigate
+EOF
+```
+
+
+#### Parameters
+
+You can add extra parameters with :
+
+
+```
+- repo: https://github.com/rapidsai/frigate/
+  rev: v0.4.0 #  pre-commit autoupdate  - to keep the version up to date
+  hooks:
+    - id: frigate
+      args:
+        - --output=README.rst
+        - --format=rst
+        - --no-credits
+        - --no-deps
+
+```
