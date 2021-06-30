@@ -16,7 +16,6 @@ Note : pre-commit creates a virtualenv with the hook
 """
 
 
-
 def main(output_file, format, credits=True, deps=True):
     """Write a README file for discovered Helm chart(s).
 
