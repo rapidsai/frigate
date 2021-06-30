@@ -32,7 +32,7 @@ fi
 ################################################################################
 
 gpuci_logger "Get conda file output locations"
-export FRIGATE_FILE=`conda build conda/recipes/frigate --output`
+export FRIGATE_FILE=$(conda build conda/recipes/frigate --output)
 
 ################################################################################
 # UPLOAD - Conda packages
@@ -40,22 +40,9 @@ export FRIGATE_FILE=`conda build conda/recipes/frigate --output`
 
 gpuci_logger "Starting conda uploads"
 
-if [ "$UPLOAD_FRIGATE" == "1" ]; then
-  test -e ${FRIGATE_FILE}
-  echo "Upload frigate"
-  echo ${FRIGATE_FILE}
-  gpuci_retry anaconda -t ${MY_UPLOAD_KEY} upload -u ${CONDA_USERNAME:-rapidsai} --label main --skip-existing ${FRIGATE_FILE} --no-progress
+gpuci_logger "Upload frigate"
+gpuci_logger ${FRIGATE_FILE}
+gpuci_retry anaconda -t ${MY_UPLOAD_KEY} upload -u ${CONDA_USERNAME:-rapidsai} --label main --skip-existing ${FRIGATE_FILE} --no-progress
 
-  echo "Upload pypi"
-  twine upload --skip-existing -u ${TWINE_USERNAME:-rapidsai} dist/*
-fi
-
-
-
-
-
-
-
-
-
-
+gpuci_logger "Upload pypi"
+twine upload --skip-existing -u ${TWINE_USERNAME:-rapidsai} dist/*

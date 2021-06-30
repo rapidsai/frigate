@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2020, NVIDIA CORPORATION.
+# Copyright (c) 2021, NVIDIA CORPORATION.
 
 # Ignore errors and set path
 set +e
