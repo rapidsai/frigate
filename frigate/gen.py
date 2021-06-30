@@ -157,6 +157,8 @@ def get_comment(tree, key):
     comments = tree.ca.items[key]
     linecol = tree.lc.data[key]
     for comment in flatten(comments):
+        if isinstance(comment, str):
+            return clean_comment(comment)
         if comment is not None and comment.start_mark.line == linecol[0]:
             first_line = comment.value.strip().split("\n")[0]
             return clean_comment(first_line)
