@@ -8,6 +8,7 @@ Frigate
    customizing
    cli
    sphinx
+   pre-commit-hook
 
 Frigate is a tool for automatically generating documentation for your `Helm charts`_.
 
