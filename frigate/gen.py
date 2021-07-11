@@ -3,7 +3,8 @@ import os.path
 import tempfile
 import shutil
 import subprocess
-
+import datetime
+from json import JSONEncoder
 from jinja2 import Environment, FileSystemLoader
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
@@ -34,6 +35,36 @@ def load_chart(chartdir, root=None):
     with open(os.path.join(chartdir, "Chart.yaml"), "r") as fh:
         chart = yaml.load(fh.read())
     return chart, list(traverse(values, root=root))
+
+
+def load_prepacked_chart_with_dependencies(chartdir, root=None):
+    root = [] if root is None else root
+    chart, values = load_chart(chartdir, root=root)
+    if "dependencies" in chart:
+        for dependency in chart["dependencies"]:
+            dependency_name = dependency["name"]
+
+            with tempfile.TemporaryDirectory() as tmpdirname:
+                tar_file_path = os.path.join(
+                    chartdir, "charts", f"{dependency_name}-{dependency['version']}.tgz",
+                )
+                if os.path.isfile(tar_file_path):
+                    dependency_path = tar_file_path
+                    shutil.unpack_archive(dependency_path, tmpdirname)
+                    dependency_dir = os.path.join(tmpdirname, dependency_name)
+                else:
+                    dependency_path = os.path.join(
+                        chartdir, "charts", f"{dependency_name}",
+                    )
+                    dependency_dir = os.path.join(chartdir, dependency_path)
+                # chart namespace eg nginx.controller.foo
+                namespace = root + [dependency_name]
+
+                _, dependency_values = load_prepacked_chart_with_dependencies(
+                    dependency_dir, namespace
+                )
+                values = squash_duplicate_values(values + dependency_values)
+    return chart, values
 
 
 def load_chart_with_dependencies(chartdir, root=None):
@@ -186,6 +217,12 @@ def clean_comment(comment):
     return comment.strip("# ")
 
 
+class DateTimeEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()
+
+
 def traverse(tree, root=None):
     """Iterate over a tree of configuration and extract all information.
 
@@ -232,10 +269,10 @@ def traverse(tree, root=None):
             if key in tree.ca.items:
                 comment = get_comment(tree, key)
             param = ".".join(root + [key])
-            yield [param, comment, json.dumps(default)]
+            yield [param, comment, json.dumps(default, indent=4, sort_keys=True, cls=DateTimeEncoder)]
 
 
-def gen(chartdir, output_format, credits=True, deps=True):
+def gen(chartdir, output_format, credits=True, deps=True, update=True):
     """Generate documentation for a Helm chart.
 
     Generate documentation for a Helm chart given the path to a chart and a
@@ -246,14 +283,19 @@ def gen(chartdir, output_format, credits=True, deps=True):
         output_format (str): Output format (maps to jinja templates in frigate)
         credits (bool): Show Frigate credits in documentation
         deps (bool): Read values from chart dependencies and include them in the config table
+        update (bool): If false, frigate won't update the charts at runtime
 
     Returns:
         str: Rendered documentation for the Helm chart
 
     """
-    chart, values = (
-        load_chart_with_dependencies(chartdir) if deps else load_chart(chartdir)
-    )
+    if deps:
+        if update:
+            chart, values = load_chart_with_dependencies(chartdir)
+        else:
+            chart, values = load_prepacked_chart_with_dependencies(chartdir)
+    else:
+        chart, values = load_chart(chartdir)
 
     templates = Environment(loader=FileSystemLoader([chartdir, TEMPLATES_PATH]))
     if os.path.isfile(os.path.join(chartdir, DOTFILE_NAME)):

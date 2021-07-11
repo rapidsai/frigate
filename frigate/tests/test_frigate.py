@@ -157,9 +157,8 @@ def test_deps(deps_chart_path):
 
     docs = gen(deps_chart_path, "markdown")
 
-    assert "simple.image.repository" in docs
-    [tag_line] = [line for line in docs.splitlines() if "simple.image.tag" in line]
-    assert "mainline" in tag_line
+    assert "<td>simple.image.repository</td>" in docs
+    assert "<td>\n\n\"mainline\"\n\n</td>" in docs
 
 
 def test_squash_duplicates():
@@ -169,3 +168,11 @@ def test_squash_duplicates():
 
     assert len(values) == 1
     assert values[0][2] == "world"
+
+
+def test_load_pre_packaged_chart(deps_chart_path):
+    from frigate.gen import gen
+
+    docs = gen(deps_chart_path, "markdown", update=False)
+    assert "image.repository" in docs
+    assert "<td>\n\n\"nginx\"\n\n</td>" in docs

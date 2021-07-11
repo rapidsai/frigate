@@ -15,14 +15,37 @@
 ## Configuration
 
 The following table lists the configurable parameters of the {{ name | capitalize }} chart and their default values.
-
-| Parameter                | Description             | Default        |
-| ------------------------ | ----------------------- | -------------- |
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
 {% for (param, comment, default) in values -%}
-| `{{ param }}` | {{ comment }} | `{{ default }}` |
-{% endfor -%}
-{%- endblock %}
+<tr>
+<td>{{ param }}</td>
+<td>{{ comment }}</td>
+<td>
+{% if "\n" in default %}
 
+```json
+
+{{ default }}
+
+```
+
+{% else %}
+{{ default }}
+{% endif %}
+</td>
+</tr>
+{% endfor -%}
+</tbody>
+</table>
+{%- endblock %}
 {% block footnotes -%}
 {{ footnotes }}
 {% endblock -%}
