@@ -39,9 +39,8 @@ Into the repository you want to have the pre-commit hook installed, run:
 
 
 ```
-cat <<EOF > .pre-commit-config.yaml
-repos:
-- repo: https://github.com/rapidsai/frigate/
+cat <<EOF >> .pre-commit-config.yaml
+- repo: https://github.com/rapidsai/frigate
   rev: v0.4.0 #  pre-commit autoupdate  - to keep the version up to date
   hooks:
     - id: frigate
@@ -55,7 +54,7 @@ You can add extra parameters with :
 
 
 ```
-- repo: https://github.com/rapidsai/frigate/
+- repo: https://github.com/rapidsai/frigate
   rev: v0.4.0 #  pre-commit autoupdate  - to keep the version up to date
   hooks:
     - id: frigate
