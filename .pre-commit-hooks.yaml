@@ -2,5 +2,5 @@
     name: frigate
     entry: frigate hook
     language: python
-    require_serial: true
+    pass_filenames: false
     always_run: true
