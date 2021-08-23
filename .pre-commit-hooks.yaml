@@ -1,6 +1,8 @@
 -   id: frigate
     name: frigate
     entry: frigate hook
+    description: Run frigate to generate documentation for your Helm charts.
     language: python
     pass_filenames: false
     always_run: true
+    types: ["helm"]
