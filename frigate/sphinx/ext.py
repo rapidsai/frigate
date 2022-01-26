@@ -9,8 +9,11 @@ from frigate.gen import gen
 
 
 class FrigateDirective(rst.Directive):
-    has_content = False
+    has_content = True
     required_arguments = 1
+    option_spec = {
+        'output_format': str,
+    }
 
     def run(self):
         chart_path = os.path.join(
