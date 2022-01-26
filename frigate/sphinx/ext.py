@@ -20,7 +20,7 @@ class FrigateDirective(rst.Directive):
             os.getcwd(),  # TODO Need to find a better way to get the root of the docs
             self.arguments[0],
         )
-        output = ViewList(gen(chart_path, output_format=self.option_spec.get('output_format')).split("\n"))
+        output = ViewList(gen(chart_path, output_format=self.options.get('output_format')).split("\n"))
 
         node = nodes.section()
         node.document = self.state.document
