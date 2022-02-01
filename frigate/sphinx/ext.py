@@ -15,17 +15,16 @@ class FrigateDirective(rst.Directive):
     option_spec = {
         'output_format': unchanged,
     }
+    options = {
+        'output_format': 'rst',
+    }
 
     def run(self):
         chart_path = os.path.join(
             os.getcwd(),  # TODO Need to find a better way to get the root of the docs
             self.arguments[0],
         )
-        if self.options.get('output_format') == "":
-            output_format = 'rst'
-        else:
-            output_format = self.options.get('output_format')
-        output = ViewList(gen(chart_path, output_format=output_format).split("\n"))
+        output = ViewList(gen(chart_path, output_format=self.options.get('output_format')).split("\n"))
 
         node = nodes.section()
         node.document = self.state.document
