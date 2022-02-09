@@ -4,25 +4,26 @@
 ###########################
 
 ## Usage
-# bash update-version.sh <type>
-#     where <type> is either `major`, `minor`, `patch`
+# bash update-version.sh <new_version>
 
 set -e
 
-# Grab argument for release type
-RELEASE_TYPE=$1
+# Format is YY.MM.PP - no leading 'v' or trailing 'a'
+NEXT_FULL_TAG=$1
 
-# Get current version and calculate next versions
-CURRENT_TAG=`git tag | grep -xE 'v[0-9\.]+' | sort --version-sort | tail -n 1 | tr -d 'v'`
-CURRENT_MAJOR=`echo $CURRENT_TAG | awk '{split($0, a, "."); print a[1]}'`
-CURRENT_MINOR=`echo $CURRENT_TAG | awk '{split($0, a, "."); print a[2]}'`
-CURRENT_PATCH=`echo $CURRENT_TAG | awk '{split($0, a, "."); print a[3]}'`
-NEXT_MAJOR=$((CURRENT_MAJOR + 1))
-NEXT_MINOR=$((CURRENT_MINOR + 1))
-NEXT_PATCH=$((CURRENT_PATCH + 1))
+# Get current version
+CURRENT_TAG=$(git tag --merged HEAD | grep -xE '^v.*' | sort --version-sort | tail -n 1 | tr -d 'v')
+CURRENT_MAJOR=$(echo $CURRENT_TAG | awk '{split($0, a, "."); print a[1]}')
+CURRENT_MINOR=$(echo $CURRENT_TAG | awk '{split($0, a, "."); print a[2]}')
+CURRENT_PATCH=$(echo $CURRENT_TAG | awk '{split($0, a, "."); print a[3]}')
 CURRENT_SHORT_TAG=${CURRENT_MAJOR}.${CURRENT_MINOR}
-NEXT_FULL_TAG=""
-NEXT_SHORT_TAG=""
+
+#Get <major>.<minor> for next version
+NEXT_MAJOR=$(echo $NEXT_FULL_TAG | awk '{split($0, a, "."); print a[1]}')
+NEXT_MINOR=$(echo $NEXT_FULL_TAG | awk '{split($0, a, "."); print a[2]}')
+NEXT_SHORT_TAG=${NEXT_MAJOR}.${NEXT_MINOR}
+
+echo "Preparing release $CURRENT_TAG => $NEXT_FULL_TAG"
 
 # Determine release type
 if [ "$RELEASE_TYPE" == "major" ]; then
