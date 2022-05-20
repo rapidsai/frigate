@@ -22,7 +22,7 @@ def load_chart(chartdir, root=None):
 
     Args:
         chartdir (str): Path to the Helm chart.
-        root (str, optional): The root of the namespace we are currently at. Used for recursion.
+        root (list, optional): The root of the namespace we are currently at. Used for recursion.
 
     Returns:
         chart (dict): Contents of `Chart.yaml` loaded into a dict.
@@ -37,28 +37,27 @@ def load_chart(chartdir, root=None):
 
 
 def load_chart_with_dependencies(chartdir, root=None):
-    """Load the yaml information from a Helm chart directory and its dependencies.
-
-    Load in the `Chart.yaml` and `values.yaml` files from a Helm
-    chart.
-
-    Inspect the `Chart.yaml` and if there are dependencies unpack their
-    `values.yaml` and `Chart.yaml` and merge the values. Recur for all
-    dependencies.
+    """
+    Load and return dictionaries representing Chart.yaml and values.yaml from
+    the Helm chart. If Chart.yaml declares dependencies, recursively merge in
+    their values as well.
 
     Args:
         chartdir (str): Path to the Helm chart.
-        root (str, optional): The root of the namespace we are currently at. Used for recursion.
+        root (list, optional): The root of the namespace we are currently at. Used for recursion.
 
     Returns:
         chart (dict): Contents of `Chart.yaml` loaded into a dict.
         values (dict): Contents of `values.yaml` loaded into a dict.
-
     """
-    root = [] if root is None else root
+    if root is None:
+        root = []
     chart, values = load_chart(chartdir, root=root)
     if "dependencies" in chart:
+        # update the helm chart's charts/ folder
         update_chart_dependencies(chartdir)
+
+        # recursively update values by unpacking the helm charts in the charts/ folder
         for dependency in chart["dependencies"]:
             dependency_name = dependency["name"]
             dependency_path = os.path.join(
@@ -200,7 +199,7 @@ def traverse(tree, root=None):
 
     Args:
         comment (ruamel.yaml.comments.CommentedMap): Tree of config to traverse.
-        root (str, optional): The root of the namespace we are currently at. Used for recursion.
+        root (list, optional): The root of the namespace we are currently at. Used for recursion.
 
     Yields:
         list(param, comment, value): Each namespaced parameter (str), the comment (str) and value (obj).
