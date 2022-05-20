@@ -95,7 +95,7 @@ def squash_duplicate_values(values):
     return [(key, tmp[key][0], tmp[key][1]) for key in tmp]
 
 
-def update_chart_dependencies(path, chart_name):
+def update_chart_dependencies(chart_path):
     """Update a helm charts local cache of dependencies.
 
     In order to generate a values table including dependencies we need
@@ -103,8 +103,8 @@ def update_chart_dependencies(path, chart_name):
     values for we will call ``helm dep update <chart>``.
 
     Args:
-        path (string): Path to the directory containing the helm chart.
-        chart_name (string): The name of the chart to update dependencies for.
+        chart_path (string): Path to the directory containing the helm chart
+                             with dependencies to update to its charts/ folder.
 
     """
     if shutil.which("helm") is None:
@@ -115,8 +115,8 @@ def update_chart_dependencies(path, chart_name):
             "value table entried for dependencies."
         )
     subprocess.check_call(
-        ["helm", "dep", "update", chart_name],
-        cwd=path,
+        ["helm", "dep", "update", "."],
+        cwd=chart_path,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
