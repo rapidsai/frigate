@@ -58,14 +58,13 @@ def load_chart_with_dependencies(chartdir, root=None):
     root = [] if root is None else root
     chart, values = load_chart(chartdir, root=root)
     if "dependencies" in chart:
+        update_chart_dependencies(chartdir)
         for dependency in chart["dependencies"]:
             dependency_name = dependency["name"]
             dependency_path = os.path.join(
                 chartdir, "charts", f"{dependency_name}-{dependency['version']}.tgz",
             )
             with tempfile.TemporaryDirectory() as tmpdirname:
-                update_chart_dependencies(tmpdirname, dependency_name)
-
                 shutil.unpack_archive(dependency_path, tmpdirname)
                 dependency_dir = os.path.join(tmpdirname, dependency_name)
 
