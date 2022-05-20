@@ -114,18 +114,18 @@ def update_chart_dependencies(path, chart_name):
             "Alternatively run frigate again with the `--no-deps` flag to skip generating "
             "value table entried for dependencies."
         )
-    subprocess.Popen(
+    subprocess.check_call(
         ["helm", "repo", "update"],
         cwd=path,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-    ).communicate()
-    subprocess.Popen(
+    )
+    subprocess.check_call(
         ["helm", "dep", "update", chart_name],
         cwd=path,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-    ).communicate()
+    )
     return None
 
 
