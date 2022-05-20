@@ -116,12 +116,6 @@ def update_chart_dependencies(path, chart_name):
             "value table entried for dependencies."
         )
     subprocess.check_call(
-        ["helm", "repo", "update"],
-        cwd=path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    subprocess.check_call(
         ["helm", "dep", "update", chart_name],
         cwd=path,
         stdout=subprocess.PIPE,
