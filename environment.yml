@@ -10,4 +10,4 @@ dependencies:
   - kubernetes-helm
   - pip
   - pip:
-    - "."
+      - "."
