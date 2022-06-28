@@ -22,7 +22,7 @@ def load_chart(chartdir, root=None):
 
     Args:
         chartdir (str): Path to the Helm chart.
-        root (str, optional): The root of the namespace we are currently at. Used for recursion.
+        root (list, optional): The root of the namespace we are currently at. Used for recursion.
 
     Returns:
         chart (dict): Contents of `Chart.yaml` loaded into a dict.
@@ -37,27 +37,27 @@ def load_chart(chartdir, root=None):
 
 
 def load_chart_with_dependencies(chartdir, root=None):
-    """Load the yaml information from a Helm chart directory and its dependencies.
-
-    Load in the `Chart.yaml` and `values.yaml` files from a Helm
-    chart.
-
-    Inspect the `Chart.yaml` and if there are dependencies unpack their
-    `values.yaml` and `Chart.yaml` and merge the values. Recur for all
-    dependencies.
+    """
+    Load and return dictionaries representing Chart.yaml and values.yaml from
+    the Helm chart. If Chart.yaml declares dependencies, recursively merge in
+    their values as well.
 
     Args:
         chartdir (str): Path to the Helm chart.
-        root (str, optional): The root of the namespace we are currently at. Used for recursion.
+        root (list, optional): The root of the namespace we are currently at. Used for recursion.
 
     Returns:
         chart (dict): Contents of `Chart.yaml` loaded into a dict.
         values (dict): Contents of `values.yaml` loaded into a dict.
-
     """
-    root = [] if root is None else root
+    if root is None:
+        root = []
     chart, values = load_chart(chartdir, root=root)
     if "dependencies" in chart:
+        # update the helm chart's charts/ folder
+        update_chart_dependencies(chartdir)
+
+        # recursively update values by unpacking the helm charts in the charts/ folder
         for dependency in chart["dependencies"]:
             dependency_name = dependency["name"]
             dependency_path = os.path.join(
@@ -67,7 +67,6 @@ def load_chart_with_dependencies(chartdir, root=None):
                 shutil.unpack_archive(dependency_path, tmpdirname)
                 dependency_dir = os.path.join(tmpdirname, dependency_name)
 
-                update_chart_dependencies(tmpdirname, dependency_name)
                 _, dependency_values = load_chart_with_dependencies(
                     dependency_dir, root + [dependency_name]
                 )
@@ -95,7 +94,7 @@ def squash_duplicate_values(values):
     return [(key, tmp[key][0], tmp[key][1]) for key in tmp]
 
 
-def update_chart_dependencies(path, chart_name):
+def update_chart_dependencies(chart_path):
     """Update a helm charts local cache of dependencies.
 
     In order to generate a values table including dependencies we need
@@ -103,8 +102,8 @@ def update_chart_dependencies(path, chart_name):
     values for we will call ``helm dep update <chart>``.
 
     Args:
-        path (string): Path to the directory containing the helm chart.
-        chart_name (string): The name of the chart to update dependencies for.
+        chart_path (string): Path to the directory containing the helm chart
+                             with dependencies to update to its charts/ folder.
 
     """
     if shutil.which("helm") is None:
@@ -114,18 +113,12 @@ def update_chart_dependencies(path, chart_name):
             "Alternatively run frigate again with the `--no-deps` flag to skip generating "
             "value table entried for dependencies."
         )
-    subprocess.Popen(
-        ["helm", "repo", "update"],
-        cwd=path,
+    subprocess.check_call(
+        ["helm", "dep", "update", "."],
+        cwd=chart_path,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-    ).communicate()
-    subprocess.Popen(
-        ["helm", "dep", "update", chart_name],
-        cwd=path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    ).communicate()
+    )
     return None
 
 
@@ -206,7 +199,7 @@ def traverse(tree, root=None):
 
     Args:
         comment (ruamel.yaml.comments.CommentedMap): Tree of config to traverse.
-        root (str, optional): The root of the namespace we are currently at. Used for recursion.
+        root (list, optional): The root of the namespace we are currently at. Used for recursion.
 
     Yields:
         list(param, comment, value): Each namespaced parameter (str), the comment (str) and value (obj).
