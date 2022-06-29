@@ -155,7 +155,7 @@ def test_custom_template(rich_chart_path):
 def test_deps(deps_chart_path):
     from frigate.gen import gen
 
-    docs = gen(deps_chart_path, "markdown")
+    docs = gen(deps_chart_path, "markdown", skip_dep_repos_refresh=True)
 
     assert "simple.image.repository" in docs
     [tag_line] = [line for line in docs.splitlines() if "simple.image.tag" in line]

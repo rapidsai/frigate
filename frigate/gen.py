@@ -36,7 +36,7 @@ def load_chart(chartdir, root=None):
     return chart, list(traverse(values, root=root))
 
 
-def load_chart_with_dependencies(chartdir, root=None):
+def load_chart_with_dependencies(chartdir, root=None, skip_dep_repos_refresh=False):
     """
     Load and return dictionaries representing Chart.yaml and values.yaml from
     the Helm chart. If Chart.yaml declares dependencies, recursively merge in
@@ -55,7 +55,7 @@ def load_chart_with_dependencies(chartdir, root=None):
     chart, values = load_chart(chartdir, root=root)
     if "dependencies" in chart:
         # update the helm chart's charts/ folder
-        update_chart_dependencies(chartdir)
+        update_chart_dependencies(chartdir, skip_dep_repos_refresh=skip_dep_repos_refresh)
 
         # recursively update values by unpacking the helm charts in the charts/ folder
         for dependency in chart["dependencies"]:
@@ -94,7 +94,7 @@ def squash_duplicate_values(values):
     return [(key, tmp[key][0], tmp[key][1]) for key in tmp]
 
 
-def update_chart_dependencies(chart_path):
+def update_chart_dependencies(chart_path, skip_dep_repos_refresh=False):
     """Update a helm charts local cache of dependencies.
 
     In order to generate a values table including dependencies we need
@@ -113,8 +113,11 @@ def update_chart_dependencies(chart_path):
             "Alternatively run frigate again with the `--no-deps` flag to skip generating "
             "value table entried for dependencies."
         )
+    helm_call = ["helm", "dep", "update", "."]
+    if skip_dep_repos_refresh:
+        helm_call += ["--skip-refresh"]
     subprocess.check_call(
-        ["helm", "dep", "update", "."],
+        helm_call,
         cwd=chart_path,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -228,7 +231,7 @@ def traverse(tree, root=None):
             yield [param, comment, json.dumps(default)]
 
 
-def gen(chartdir, output_format, credits=True, deps=True):
+def gen(chartdir, output_format, credits=True, deps=True, skip_dep_repos_refresh=False):
     """Generate documentation for a Helm chart.
 
     Generate documentation for a Helm chart given the path to a chart and a
@@ -245,7 +248,9 @@ def gen(chartdir, output_format, credits=True, deps=True):
 
     """
     chart, values = (
-        load_chart_with_dependencies(chartdir) if deps else load_chart(chartdir)
+        load_chart_with_dependencies(chartdir, skip_dep_repos_refresh=skip_dep_repos_refresh)
+        if deps
+        else load_chart(chartdir)
     )
 
     templates = Environment(loader=FileSystemLoader([chartdir, TEMPLATES_PATH]))
