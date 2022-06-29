@@ -4,6 +4,6 @@ description: A Helm chart for Kubernetes
 name: simple
 version: 0.1.0
 dependencies:
-  - name: simple  # The simple chart but packaged and already pulled
+  - name: simple
     version: "0.1.0"
-    repository: 'https://example.com/frigate'
+    repository: "file://../simple"
