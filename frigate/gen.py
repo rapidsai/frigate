@@ -1,14 +1,4 @@
-"""Loads a chart and its contents into a dictionary .
-
-Raises:
-    RuntimeError: [description]
-
-Returns:
-    [type]: [description]
-
-Yields:
-    [type]: [description]
-"""
+"""Loads a chart and its contents into a dictionary."""
 # pylint: disable=redefined-builtin
 import json
 import os.path
@@ -18,6 +8,8 @@ import subprocess
 import tempfile
 
 from jinja2 import Environment, FileSystemLoader
+from loguru import logger
+import markdown_strings
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
 
@@ -25,6 +17,43 @@ from frigate import TEMPLATES_PATH, DOTFILE_NAME
 from frigate.utils import flatten
 
 yaml = YAML()
+
+
+def get_table_from_values(values):
+    """Return a formatted table from a list of values.
+
+    Args:
+        values (OrderedDict): An ordered dictionary of values
+
+    Returns:
+        str: A markdown-formatted table
+    """
+    table_header = markdown_strings.table_row(['Parameter', 'Description', 'Default'])
+    table_str = f'{table_header}'
+    table_delim = markdown_strings.table_delimiter_row(3)
+    table_str = f'{table_str}\n{table_delim}'
+    for value in values:
+        table_row = markdown_strings.table_row([value[0], value[1], ''.join(value[2:])])
+        table_str = f'{table_str}\n{table_row}'
+
+    table_str = f'{table_str}\n'
+    return table_str
+
+def load_long_description(chartdir):
+    """Load a long description from the chart directory.
+
+    Args:
+        chartdir (pathlib.Path): A full path to the chart directory
+
+    Returns:
+        str: A string containing the long description.
+    """
+    logger.debug(__name__)
+    chart_path = pathlib.Path(f'{chartdir}/Chart.yaml')
+    ld_header = markdown_strings.header("Chart", 3)
+    with chart_path.open('r', encoding='utf-8') as chart_fh:
+        chart_str = markdown_strings.code_block(chart_fh.read(), language='yaml')
+    return f'{ld_header}\n\n{chart_str}\n'
 
 
 def load_chart(chartdir, root=None):
@@ -49,6 +78,7 @@ def load_chart(chartdir, root=None):
     values_path = pathlib.Path(f'{chartdir}/values.yaml')
     with values_path.open('r', encoding='utf-8') as values_fh:
         values = yaml.load(values_fh.read())
+
     return chart, list(traverse(values, root=root))
 
 
@@ -79,14 +109,18 @@ def load_chart_with_dependencies(chartdir, root=None):
             dependency_path = os.path.join(
                 chartdir, "charts", f"{dependency_name}-{dependency['version']}.tgz",
             )
-            with tempfile.TemporaryDirectory() as tmpdirname:
-                shutil.unpack_archive(dependency_path, tmpdirname)
-                dependency_dir = os.path.join(tmpdirname, dependency_name)
 
-                _, dependency_values = load_chart_with_dependencies(
-                    dependency_dir, root + [dependency_name]
-                )
-                values = squash_duplicate_values(values + dependency_values)
+            try:
+                with tempfile.TemporaryDirectory() as tmpdirname:
+                    shutil.unpack_archive(dependency_path, tmpdirname)
+                    dependency_dir = os.path.join(tmpdirname, dependency_name)
+
+                    _, dependency_values = load_chart_with_dependencies(
+                        dependency_dir, root + [dependency_name]
+                    )
+                    values = squash_duplicate_values(values + dependency_values)
+            except FileNotFoundError:
+                values = values
 
     return chart, values
 
@@ -261,7 +295,8 @@ def gen(chartdir, output_format, deps, credits=True):
         str: Rendered documentation for the Helm chart
 
     """
-    if deps:
+    long_description = load_long_description(chartdir)
+    if deps is True:
         chart, values = load_chart_with_dependencies(chartdir)
     else:
         chart, values = load_chart(chartdir)
@@ -272,5 +307,9 @@ def gen(chartdir, output_format, deps, credits=True):
     else:
         template_name = f"{output_format}.jinja2"
     template = templates.get_template(template_name)
+    if output_format == 'myst':
+        table_str = get_table_from_values(values)
+        values = table_str
 
-    return template.render(**chart, values=values, credits=credits)
+    return template.render(**chart, long_description=long_description,
+                           values=values, credits=credits)

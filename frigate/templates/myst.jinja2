@@ -1,7 +1,7 @@
 {% extends "base.jinja2" %}
 
 {% block title -%}
-## {{ name | capitalize }}
+### {{ name | capitalize }}
 {% endblock %}
 
 {% block description -%}
@@ -11,15 +11,16 @@
 {%- endblock %}
 
 {% block table -%}
-## Configuration
+### Configuration
+
+These are options available for configuration.
+
+#### values
 
 The following table lists the configurable parameters of the {{ name | capitalize }} chart and their default values.
 
-| Parameter                | Description             | Default        |
-| ------------------------ | ----------------------- | -------------- |
-{% for (param, comment, default) in values -%}
-| `{{ param }}` | {{ comment }} | `{{ default }}` |
-{% endfor -%}
+{{ values }}
+
 {%- endblock %}
 
 {% block footnotes -%}
