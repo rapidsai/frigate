@@ -1,7 +1,11 @@
--   id: frigate
-    name: frigate
-    entry: frigate hook
-    description: Run frigate to generate documentation for your Helm charts.
-    language: python
-    pass_filenames: false
-    always_run: true
+# This is a pre-commit hook definition, for more details see:
+# https://pre-commit.com/#new-hooks
+#
+- id: frigate
+  name: frigate
+  entry: frigate hook
+  description: Run frigate to generate documentation for your Helm charts.
+  # language=conda relies on the environment.yml file in this repo
+  language: conda
+  pass_filenames: false
+  always_run: true

@@ -1,0 +1,15 @@
+# These are dependencies for the pre-commit hook defined in
+# .pre-commit-hooks.yaml.
+#
+# This environment can provide `helm` via the kubernetes-helm package, but must
+# also explicitly install frigate itself within this repo.
+#
+name: pre-commit-hook-environment
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - kubernetes-helm
+  - pip
+  - pip:
+      - "."
