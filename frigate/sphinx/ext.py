@@ -1,11 +1,14 @@
 """Module that will be used for Sphinx directive frigate."""
-import os
+import pathlib
 
 from docutils import nodes
 from docutils.parsers import rst
+
 from docutils.parsers.rst.directives import unchanged
 from docutils.statemachine import ViewList
+
 from sphinx.util.nodes import nested_parse_with_titles
+from loguru import logger
 
 from frigate.gen import gen
 
@@ -20,8 +23,8 @@ class FrigateDirective(rst.Directive):
     has_content = True
     required_arguments = 1
     option_spec = {
-        'deps': bool,
         'output_format': unchanged,
+        'deps': unchanged,
     }
 
     def run(self):
@@ -30,13 +33,17 @@ class FrigateDirective(rst.Directive):
         Returns:
             list: A list of child nodes.Node objects.
         """
-        chart_path = os.path.join(
-            os.getcwd(),  # TODO Need to find a better way to get the root of the docs
-            self.arguments[0],
-        )
-        output = ViewList(gen(chart_path,
-                              deps=self.options.get('deps'),
-                              output_format=self.options.get('output_format')).split("\n"))
+        logger.debug(__name__)
+        chart_path = pathlib.Path(
+            f'{pathlib.Path.cwd()}/{self.arguments[0]}/').resolve()
+
+        gen_output = gen(
+            chart_path,
+            deps=self.options.get('deps'),
+            output_format=self.options.get('output_format'))
+        logger.warning(gen_output)
+        output = ViewList(gen_output)
+        logger.error(gen_output)
 
         node = nodes.section()
         node.document = self.state.document

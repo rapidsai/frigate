@@ -1,3 +1,4 @@
+"""Frigat utilities module."""
 import collections.abc
 import os
 
@@ -17,7 +18,7 @@ def flatten(nested_list):
         ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
     Args:
-        l (list): Nested list of lists of lists of lists, etc.
+        nested_list (list): Nested list of lists of lists of lists, etc.
 
     Yields:
         obj: Flattened list items.
@@ -33,6 +34,11 @@ def flatten(nested_list):
 
 
 def list_templates():
+    """List all templates in TEMPLATES_PATH.
+
+    Returns:
+        templates (list): List of available templates
+    """
     templates = []
     for template in os.listdir(TEMPLATES_PATH):
         [template, _] = template.split(".")
