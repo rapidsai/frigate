@@ -29,17 +29,17 @@ def load_chart(chartdir, root=None):
         values (dict): Contents of `values.yaml` loaded into a dict.
 
     """
-    with open(os.path.join(chartdir, "values.yaml"), "r") as fh:
-        values = yaml.load(fh.read())
-    with open(os.path.join(chartdir, "Chart.yaml"), "r") as fh:
-        chart = yaml.load(fh.read())
+    with open(os.path.join(chartdir, "values.yaml"), "r", encoding='utf-8') as values_fh:
+        values = yaml.load(values_fh.read())
+    with open(os.path.join(chartdir, "Chart.yaml"), "r", encoding='utf-8') as chart_fh:
+        chart = yaml.load(chart_fh.read())
     return chart, list(traverse(values, root=root))
 
 
 def load_chart_with_dependencies(chartdir, root=None):
-    """
-    Load and return dictionaries representing Chart.yaml and values.yaml from
-    the Helm chart. If Chart.yaml declares dependencies, recursively merge in
+    """Load and return dictionaries representing Chart.yaml and values.yaml from the Helm chart.
+
+    If Chart.yaml declares dependencies, recursively merge in
     their values as well.
 
     Args:
@@ -202,7 +202,8 @@ def traverse(tree, root=None):
         root (list, optional): The root of the namespace we are currently at. Used for recursion.
 
     Yields:
-        list(param, comment, value): Each namespaced parameter (str), the comment (str) and value (obj).
+        list(param, comment, value): Each namespaced parameter (str),
+                                     the comment (str) and value (obj).
 
     """
     if root is None:

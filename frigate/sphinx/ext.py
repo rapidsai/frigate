@@ -20,8 +20,8 @@ class FrigateDirective(rst.Directive):
     has_content = True
     required_arguments = 1
     option_spec = {
-        'no_deps': bool,
-        'output_format': str,
+        'deps': bool,
+        'output_format': unchanged,
     }
 
     def run(self):
@@ -34,9 +34,9 @@ class FrigateDirective(rst.Directive):
             os.getcwd(),  # TODO Need to find a better way to get the root of the docs
             self.arguments[0],
         )
-        output = ViewList(
-            gen(
-                chart_path, output_format=self.options.get('output_format')).split("\n"))
+        output = ViewList(gen(chart_path,
+                              deps=self.options.get('deps'),
+                              output_format=self.options.get('output_format')).split("\n"))
 
         node = nodes.section()
         node.document = self.state.document
