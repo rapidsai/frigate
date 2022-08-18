@@ -1,3 +1,4 @@
+"""Module that will be used for Sphinx directive frigate."""
 import os
 
 from docutils import nodes
@@ -10,20 +11,32 @@ from frigate.gen import gen
 
 
 class FrigateDirective(rst.Directive):
+    """A factory for the FrigateDirective directive.
+
+    Args:
+        rst ([type]): [description]
+    """
+
     has_content = True
     required_arguments = 1
     option_spec = {
-        'output_format': unchanged,
+        'no_deps': bool,
+        'output_format': str,
     }
 
     def run(self):
+        """Parse the source documentation.
+
+        Returns:
+            list: A list of child nodes.Node objects.
+        """
         chart_path = os.path.join(
             os.getcwd(),  # TODO Need to find a better way to get the root of the docs
             self.arguments[0],
         )
-        if self.options.get('output_format') is None:
-            self.options.update({'output_format': 'rst'})
-        output = ViewList(gen(chart_path, output_format=self.options.get('output_format')).split("\n"))
+        output = ViewList(
+            gen(
+                chart_path, output_format=self.options.get('output_format')).split("\n"))
 
         node = nodes.section()
         node.document = self.state.document
@@ -33,4 +46,9 @@ class FrigateDirective(rst.Directive):
 
 
 def setup(app):
+    """Register the directive for the sphinx application.
+
+    Args:
+        app ([SphinxApp]): The current SphinxApp
+    """
     app.add_directive("frigate", FrigateDirective)
