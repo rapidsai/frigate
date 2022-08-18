@@ -17,7 +17,6 @@ import shutil
 import subprocess
 import tempfile
 
-from loguru import logger
 from jinja2 import Environment, FileSystemLoader
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap

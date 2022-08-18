@@ -28,6 +28,7 @@ sdist/
 var/
 wheels/
 pip-wheel-metadata/
+Pipfile*
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -134,3 +135,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.vscode/
+

@@ -1,3 +1,4 @@
+"""Frigate CLI module."""
 import click
 import frigate.gen
 import frigate.pre_commit_hook
@@ -6,7 +7,8 @@ from frigate.utils import list_templates
 
 @click.group()
 def cli():
-    pass
+    """Run the command from the CLI."""
+
 
 
 @cli.command()
@@ -26,6 +28,14 @@ def cli():
     "--no-deps", is_flag=True, default=True, help="Do not render dependency values",
 )
 def gen(filename, output_format, no_credits, no_deps):
+    """Generate a frigate document.
+
+    Args:
+        filename ([type]): [description]
+        output_format ([type]): [description]
+        no_credits ([type]): [description]
+        no_deps ([type]): [description]
+    """
     click.echo(
         frigate.gen.gen(filename, output_format, credits=no_credits, deps=no_deps)
     )
@@ -61,4 +71,12 @@ def gen(filename, output_format, no_credits, no_deps):
     help="Do not render dependency values",
 )
 def hook(artifact, output_format, no_credits, no_deps):
+    """Run the pre-commit hook.
+
+    Args:
+        artifact ([type]): [description]
+        output_format ([type]): [description]
+        no_credits ([type]): [description]
+        no_deps ([type]): [description]
+    """
     frigate.pre_commit_hook.main(artifact, output_format, credits=no_credits, deps=no_deps)
