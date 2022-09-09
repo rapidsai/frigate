@@ -45,7 +45,7 @@ def main(output_file, format, credits=True, deps=True):
     # For each chart
     for chart in charts:
         chart_location = os.path.dirname(chart)
-        frigate_output = gen(chart_location, format, credits=credits, deps=deps)
+        frigate_output = gen(chart_location, format, credits=credits, deps=deps, skip_dep_repos_refresh=True)
         artifact = Path(chart_location, output_file)
         Path(artifact).touch()
         with open(artifact, "r") as before:
