@@ -1,0 +1,11 @@
+# Copyright (c) 2023, NVIDIA CORPORATION.
+
+repos:
+      - repo: https://github.com/PyCQA/flake8
+        rev: 6.0.0
+        hooks:
+              - id: flake8
+                args: ["--exclude=src,style,test"]
+                files: frigate/.*$
+default_language_version:
+      python: python3
