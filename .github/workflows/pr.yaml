@@ -20,6 +20,7 @@ jobs:
           $CONDA/bin/conda install -c conda-forge pre-commit
           $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
   conda-python:
+    needs: check-style
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,6 +33,7 @@ jobs:
           $CONDA/bin/conda install -c conda-forge conda-build
           $CONDA/bin/conda build conda/recipes/frigate
   docs-build:
+    needs: [conda-python, pip-python]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -48,6 +50,7 @@ jobs:
           cd docs
           $CONDA/bin/sphinx-build -b dirhtml . _html
   pip-python:
+    needs: check-style
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
