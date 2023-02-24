@@ -1,0 +1,61 @@
+name: pr
+
+on:
+  pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Run check style
+        run: |
+          $CONDA/bin/conda install -c conda-forge pre-commit
+          $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
+  conda-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Build and test Python package on conda
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Build frigate
+        run: |
+          $CONDA/bin/conda install -c conda-forge conda-build
+          $CONDA/bin/conda build conda/recipes/frigate
+  docs-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Build docs
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Build frigate docs
+        run: |
+          $CONDA/bin/conda install -c conda-forge conda-build
+          $CONDA/bin/conda build conda/recipes/frigate
+          $CONDA/bin/conda install --use-local frigate
+          $CONDA/bin/conda install -c conda-forge --file requirements_docs.txt
+          cd docs
+          $CONDA/bin/sphinx-build -b dirhtml . _html
+  pip-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Build and test Python package using pip
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Build frigate
+        run: |
+          pip install wheel
+          python setup.py sdist bdist_wheel
