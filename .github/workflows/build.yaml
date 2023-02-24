@@ -1,0 +1,38 @@
+name: build
+
+on:
+  push:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  conda-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Build and publish Python package on conda @rapidsai-nightly
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Build frigate
+        run: |
+          $CONDA/bin/conda install -c conda-forge conda-build
+          export FRIGATE_FILE = $CONDA/bin/conda build conda/recipes/frigate --output
+          # upload step
+          # anaconda -t ${MY_UPLOAD_KEY} upload -u ${CONDA_USERNAME:-rapidsai} --label main --skip-existing ${FRIGATE_FILE} --no-progress
+  pip-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Build and publish Python package on pypi
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Build frigate
+        run: |
+          pip install wheel
+          python setup.py sdist bdist_wheel
+          # upload step
+          # twine upload --skip-existing -u ${TWINE_USERNAME:-rapidsai} dist/*
