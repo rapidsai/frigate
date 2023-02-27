@@ -1,38 +1,63 @@
-name: build
+name: Build and upload Frigate python package to PyPI and Conda
 
 on:
   push:
+    branches:
+      - "branch-*"
+    tags:
+      - v[0-9][0-9].[0-9][0-9].[0-9][0-9]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_dispatch:
+    inputs:
+      branch:
+        required: true
+        type: string
+      date:
+        required: true
+        type: string
+      sha:
+        required: true
+        type: string
+      build_type:
+        type: string
+        default: nightly
 
 jobs:
-  conda-python:
+  build_and_upload_pypi:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: Build and publish Python package on conda @rapidsai-nightly
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-      - name: Build frigate
+          python-version: 3.x # replace with the version of Python you're using
+      - name: Install dependencies
         run: |
-          $CONDA/bin/conda install -c conda-forge conda-build
-          export FRIGATE_FILE = $CONDA/bin/conda build conda/recipes/frigate --output
-          # upload step
-          # anaconda -t ${MY_UPLOAD_KEY} upload -u ${CONDA_USERNAME:-rapidsai} --label main --skip-existing ${FRIGATE_FILE} --no-progress
-  pip-python:
+          python -m pip install --upgrade pip
+          pip install wheel setuptools twine
+      - name: Build package
+        run: python setup.py sdist bdist_wheel
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: rapidsai
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: twine upload --skip-existing dist/*
+
+  build_and_upload_conda:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: Build and publish Python package on pypi
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-      - name: Build frigate
+          python-version: 3.x # replace with the version of Python you're using
+      - name: Install dependencies
+        run: $CONDA/bin/conda install -c conda-forge conda-build anaconda-client
+      - name: Build package
+        run: export FRIGATE_FILE=$($CONDA/bin/conda build conda/recipes/frigate --output)
+      - name: Upload to Conda
         run: |
-          pip install wheel
-          python setup.py sdist bdist_wheel
-          # upload step
-          # twine upload --skip-existing -u ${TWINE_USERNAME:-rapidsai} dist/*
+          RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_NIGHTLY_TOKEN }}
+          if ${{ inputs.build_type == "release"}}; then
+            RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_TOKEN }}
+          anaconda -t ${RAPIDS_CONDA_TOKEN} upload -u ${CONDA_USERNAME:-rapidsai} --label main --skip-existing --no-progress ${FRIGATE_FILE}
