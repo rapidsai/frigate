@@ -15,10 +15,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Install pre-commit
+        run: $CONDA/bin/conda install -c conda-forge pre-commit
       - name: Run check style
-        run: |
-          $CONDA/bin/conda install -c conda-forge pre-commit
-          $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
+        run: $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
   conda-python:
     needs: check-style
     runs-on: ubuntu-latest
@@ -28,10 +28,10 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      - name: Install conda-build
+        run: $CONDA/bin/conda install -c conda-forge conda-build
       - name: Build frigate
-        run: |
-          $CONDA/bin/conda install -c conda-forge conda-build
-          $CONDA/bin/conda build conda/recipes/frigate
+        run: $CONDA/bin/conda build conda/recipes/frigate
   docs-build:
     needs: [conda-python, pip-python]
     runs-on: ubuntu-latest
@@ -41,12 +41,16 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - name: Build frigate docs
+      - name: Install conda-build
+        run: $CONDA/bin/conda install -c conda-forge conda-build
+      - name: Build and Install Frigate
         run: |
-          $CONDA/bin/conda install -c conda-forge conda-build
           $CONDA/bin/conda build conda/recipes/frigate
           $CONDA/bin/conda install --use-local frigate
-          $CONDA/bin/conda install -c conda-forge --file requirements_docs.txt
+      - name: Install docs dependencies
+        run: $CONDA/bin/conda install -c conda-forge --file requirements_docs.txt
+      - name: Build frigate docs
+        run: |
           cd docs
           $CONDA/bin/sphinx-build -b dirhtml . _html
   pip-python:
@@ -58,7 +62,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      - name: Install wheel
+        run: pip install wheel
       - name: Build frigate
-        run: |
-          pip install wheel
-          python setup.py sdist bdist_wheel
+        run: python setup.py sdist bdist_wheel
