@@ -1,7 +1,7 @@
 on:
   workflow_call:
-    upload:
-      build_type:
+    inputs:
+      upload:
         required: true
         type: boolean
 
