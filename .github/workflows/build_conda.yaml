@@ -6,7 +6,7 @@ on:
         type: boolean
 
 jobs:
-  build-and-upload-anaconda:
+  conda-python-build:
     runs-on: ubuntu-latest
     container:
       image: "condaforge/mambaforge"

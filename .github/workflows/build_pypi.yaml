@@ -6,7 +6,7 @@ on:
         type: boolean
 
 jobs:
-  build-and-upload-pypi:
+  wheel-build-frigate:
     runs-on: ubuntu-latest
 
     steps:
