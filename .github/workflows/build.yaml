@@ -10,12 +10,12 @@ on:
 jobs:
   build_and_upload_pypi:
     name: Build Frigate Package
-    uses: ./.github/workflows/build_and_upload_to_conda.yaml
+    uses: ./.github/workflows/build_pypi.yaml
     with:
       upload: true
 
   build_and_upload_conda:
     name: Build Frigate Package
-    uses: ./.github/workflows/build_and_upload_to_conda.yaml
+    uses: ./.github/workflows/build_conda.yaml
     with:
       upload: true

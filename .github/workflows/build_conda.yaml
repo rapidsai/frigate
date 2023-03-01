@@ -22,11 +22,11 @@ jobs:
 
       - name: Install Mamba
         run: |
-          conda install -c conda-forge boa
+          $CONDA/bin/conda install -c conda-forge boa
 
       - name: Build package
         run: |
-          conda mambabuild conda/recipes/frigate --output-folder /tmp/frigate-bld
+          $CONDA/bin/conda mambabuild conda/recipes/frigate --output-folder /tmp/frigate-bld
 
       - name: Upload to Anaconda
         if: ${{ inputs.upload == 'true' }}

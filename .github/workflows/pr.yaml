@@ -23,7 +23,7 @@ jobs:
   conda-python-build:
     needs: check-style
     name: Build Frigate Package
-    uses: ./.github/workflows/build_and_upload_to_conda.yaml
+    uses: ./.github/workflows/build_conda.yaml
     with:
       upload: false
   docs-build:
@@ -58,6 +58,6 @@ jobs:
   wheel-build-frigate:
     needs: check-style
     name: Build Frigate Package
-    uses: ./.github/workflows/build_and_upload_to_pypi.yaml
+    uses: ./.github/workflows/build_pypi.yaml
     with:
       upload: false
