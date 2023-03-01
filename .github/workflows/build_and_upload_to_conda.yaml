@@ -3,7 +3,7 @@ on:
     upload:
       build_type:
         required: true
-        type: string
+        type: boolean
 
 jobs:
   build-and-upload-anaconda:
