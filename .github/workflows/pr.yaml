@@ -26,32 +26,10 @@ jobs:
     uses: ./.github/workflows/build_conda.yaml
     with:
       upload: false
-  docs-build:
-    needs: [conda-python-build, wheel-build-frigate]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-      - name: Install Frigate
-        run: python setup.py install
-      - name: Install docs dependencies
-        run: $CONDA/bin/conda install -c conda-forge --file requirements_docs.txt
-      - name: Build frigate docs
-        run: |
-          cd docs
-          $CONDA/bin/sphinx-build -b dirhtml . _html
   pr-builder:
     needs:
       - check-style
       - conda-python-build
-      - docs-build
       - wheel-build-frigate
     secrets: inherit
     uses: rapidsai/shared-action-workflows/.github/workflows/pr-builder.yaml@branch-23.04
