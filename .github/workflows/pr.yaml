@@ -20,14 +20,14 @@ jobs:
         run: $CONDA/bin/conda install -c conda-forge pre-commit
       - name: Run check style
         run: $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
-  conda-build:
+  conda-python-build:
     needs: check-style
     name: Build Frigate Package
     uses: ./.github/workflows/build_and_upload_to_conda.yaml
     with:
       upload: false
   docs-build:
-    needs: [conda-build, wheels-build]
+    needs: [conda-python-build, wheel-build-frigate]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -47,7 +47,15 @@ jobs:
         run: |
           cd docs
           $CONDA/bin/sphinx-build -b dirhtml . _html
-  wheels-build:
+  pr-builder:
+    needs:
+      - check-style
+      - conda-python-build
+      - docs-build
+      - wheel-build-frigate
+    secrets: inherit
+    uses: rapidsai/shared-action-workflows/.github/workflows/pr-builder.yaml@branch-23.04
+  wheel-build-frigate:
     needs: check-style
     name: Build Frigate Package
     uses: ./.github/workflows/build_and_upload_to_pypi.yaml
