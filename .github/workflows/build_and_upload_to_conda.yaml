@@ -1,0 +1,37 @@
+on:
+  workflow_call:
+    upload:
+      build_type:
+        required: true
+        type: string
+
+jobs:
+  build-and-upload-anaconda:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Mamba
+        run: |
+          conda install -c conda-forge boa
+
+      - name: Build package
+        run: |
+          conda mambabuild conda/recipes/frigate --output-folder /tmp/frigate-bld
+
+      - name: Upload to Anaconda
+        if: ${{ inputs.upload == 'true' }}
+        run: |
+          RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_NIGHTLY_TOKEN }}
+          if [[ "${GITHUB_REF}" =~ ^refs/tags/v[0-9]{1,2}.[0-9]{2}.[0-9]{2}$ ]]; then
+            RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_TOKEN }}
+          anaconda -t "${RAPIDS_CONDA_TOKEN}" upload -u "${CONDA_USERNAME:-rapidsai}" --label main --skip-existing --no-progress /tmp/frigate-bld/noarch/*.tar.bz2"

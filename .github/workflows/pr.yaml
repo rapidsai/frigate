@@ -14,6 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - name: Install pre-commit
         run: $CONDA/bin/conda install -c conda-forge pre-commit
@@ -21,48 +22,34 @@ jobs:
         run: $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
   conda-python:
     needs: check-style
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Build and test Python package on conda
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install conda-build
-        run: $CONDA/bin/conda install -c conda-forge conda-build
-      - name: Build frigate
-        run: $CONDA/bin/conda build conda/recipes/frigate
+    name: Build Frigate Package
+    uses: ./.github/workflows/build_and_upload_to_conda.yaml
+    with:
+      upload: false
   docs-build:
-    needs: [conda-python, pip-python]
+    needs: [conda-python, wheels-python]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Build docs
-      - uses: actions/setup-python@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          python-version: '3.10'
-      - name: Install conda-build
-        run: $CONDA/bin/conda install -c conda-forge conda-build
-      - name: Build and Install Frigate
-        run: |
-          $CONDA/bin/conda build conda/recipes/frigate
-          $CONDA/bin/conda install --use-local frigate
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install Frigate
+        run: python setup.py install
       - name: Install docs dependencies
         run: $CONDA/bin/conda install -c conda-forge --file requirements_docs.txt
       - name: Build frigate docs
         run: |
           cd docs
           $CONDA/bin/sphinx-build -b dirhtml . _html
-  pip-python:
+  wheels-python:
     needs: check-style
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Build and test Python package using pip
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install wheel
-        run: pip install wheel
-      - name: Build frigate
-        run: python setup.py sdist bdist_wheel
+    name: Build Frigate Package
+    uses: ./.github/workflows/build_and_upload_to_pypi.yaml
+    with:
+      upload: false
