@@ -31,7 +31,6 @@ jobs:
 
       - name: Upload to PyPI
         if: ${{ inputs.upload == 'true' }}
-        env:
-          TWINE_USERNAME: rapidsai
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: twine upload --skip-existing dist/*
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.RAPIDSAI_PYPI_TOKEN }}

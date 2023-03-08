@@ -9,7 +9,7 @@ jobs:
   conda-python-build:
     runs-on: ubuntu-latest
     container:
-      image: "condaforge/mambaforge"
+      image: condaforge/mambaforge
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,4 +26,5 @@ jobs:
           RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_NIGHTLY_TOKEN }}
           if [[ "${GITHUB_REF}" =~ ^refs/tags/v[0-9]{1,2}.[0-9]{2}.[0-9]{2}$ ]]; then
             RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_TOKEN }}
+          fi
           anaconda -t "${RAPIDS_CONDA_TOKEN}" upload -u "${CONDA_USERNAME:-rapidsai}" --label main --skip-existing --no-progress /tmp/frigate-bld/noarch/*.tar.bz2"
