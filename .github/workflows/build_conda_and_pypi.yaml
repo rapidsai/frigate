@@ -27,7 +27,7 @@ jobs:
           if [[ "${GITHUB_REF}" =~ ^refs/tags/v[0-9]{1,2}.[0-9]{2}.[0-9]{2}$ ]]; then
             RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_TOKEN }}
           fi
-          anaconda -t "${RAPIDS_CONDA_TOKEN}" upload --skip-existing --no-progress /tmp/frigate-bld/noarch/*.tar.bz2"
+          anaconda -t "${RAPIDS_CONDA_TOKEN}" upload --skip-existing --no-progress /tmp/frigate-bld/noarch/*.tar.bz2
   wheel-build-frigate:
     runs-on: ubuntu-latest
 
