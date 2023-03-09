@@ -22,6 +22,7 @@ jobs:
       - name: Upload to Anaconda
         if: inputs.upload == true
         run: |
+          mamba install -c conda-forge anaconda-client
           RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_NIGHTLY_TOKEN }}
           if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_TOKEN }}
