@@ -30,5 +30,4 @@ jobs:
     needs:
       - check-style
       - python-build
-    secrets: inherit
     uses: rapidsai/shared-action-workflows/.github/workflows/pr-builder.yaml@branch-23.04
