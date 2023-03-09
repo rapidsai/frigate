@@ -14,17 +14,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - name: Install mambabuild
         run: mamba install -c conda-forge boa
       - name: Build Frigate package
         run: conda mambabuild conda/recipes/frigate --output-folder /tmp/frigate-bld
       - name: Upload to Anaconda
-        if: ${{ inputs.upload == 'true' }}
+        if: inputs.upload == true
         run: |
           RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_NIGHTLY_TOKEN }}
-          if [[ "${GITHUB_REF}" =~ ^refs/tags/v[0-9]{1,2}.[0-9]{2}.[0-9]{2}$ ]]; then
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_TOKEN }}
           fi
           anaconda -t "${RAPIDS_CONDA_TOKEN}" upload --skip-existing --no-progress /tmp/frigate-bld/noarch/*.tar.bz2
@@ -35,7 +34,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -52,7 +50,7 @@ jobs:
         run: python setup.py sdist bdist_wheel
 
       - name: Upload to PyPI
-        if: ${{ inputs.upload == 'true' }}
+        if: inputs.upload == true
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.RAPIDSAI_PYPI_TOKEN }}
