@@ -4,19 +4,13 @@ on:
   push:
     branches:
       - "branch-*"
-  workflow_dispatch:
-    inputs:
-      release_type:
-        description: "Specify release type"
-        type: choice
-        options:
-          - stable
-          - nightly
-        default: nightly
+    tags:
+      - "v**"
+      - "!v**a"
+
 jobs:
   build_and_upload:
     name: Build Frigate Package
     uses: ./.github/workflows/build_conda_and_pypi.yaml
     with:
       upload: true
-      release_type: ${{ inputs.release_type }}

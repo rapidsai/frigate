@@ -4,8 +4,6 @@ on:
       upload:
         required: true
         type: boolean
-      release_type:
-        type: string
 
 jobs:
   conda-python-build:
@@ -25,7 +23,7 @@ jobs:
         if: inputs.upload == true
         run: |
           RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_NIGHTLY_TOKEN }}
-          if [[ "${{ inputs.release_type }}" == "stable" ]]; then
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             RAPIDS_CONDA_TOKEN=${{ secrets.CONDA_RAPIDSAI_TOKEN }}
           fi
           anaconda -t "${RAPIDS_CONDA_TOKEN}" upload --skip-existing --no-progress /tmp/frigate-bld/noarch/*.tar.bz2
