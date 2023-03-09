@@ -5,6 +5,10 @@ on:
         required: true
         type: boolean
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   conda-python-build:
     runs-on: ubuntu-latest
