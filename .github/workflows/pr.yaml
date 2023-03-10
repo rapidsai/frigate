@@ -20,7 +20,7 @@ jobs:
         run: $CONDA/bin/conda install -c conda-forge pre-commit
       - name: Run check style
         run: $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
-  python-build:
+  build:
     needs: check-style
     name: Build Frigate Package
     uses: ./.github/workflows/build_conda_and_pypi.yaml
@@ -29,5 +29,5 @@ jobs:
   pr-builder:
     needs:
       - check-style
-      - python-build
+      - build
     uses: rapidsai/shared-action-workflows/.github/workflows/pr-builder.yaml@branch-23.04
