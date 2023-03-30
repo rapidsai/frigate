@@ -18,7 +18,7 @@ class FrigateDirective(rst.Directive):
 
     def run(self):
         chart_path = os.path.join(
-            os.getcwd(),  # TODO Need to find a better way to get the root of the docs
+            self.state.document.settings.env.srcdir,
             self.arguments[0],
         )
         if self.options.get('output_format') is None:
