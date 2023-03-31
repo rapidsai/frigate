@@ -1,0 +1,33 @@
+name: pr
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Install pre-commit
+        run: $CONDA/bin/conda install -c conda-forge pre-commit
+      - name: Run check style
+        run: $CONDA/bin/pre-commit run --hook-stage manual --all-files --show-diff-on-failure
+  build:
+    needs: check-style
+    name: Build Frigate Package
+    uses: ./.github/workflows/build_conda_and_pypi.yaml
+    with:
+      upload: false
+  pr-builder:
+    needs:
+      - check-style
+      - build
+    uses: rapidsai/shared-action-workflows/.github/workflows/pr-builder.yaml@branch-23.04
