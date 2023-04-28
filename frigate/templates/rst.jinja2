@@ -22,15 +22,20 @@ Configuration
 
 The following table lists the configurable parameters of the {{ name | capitalize }} chart and their default values.
 
-================================================== ==================================================================================================== ==================================================
-Parameter                                          Description                                                                                          Default
-================================================== ==================================================================================================== ==================================================
-{% for (param, comment, default) in values -%}
-{% set param = '``' + param + '``' -%}
-{% set default = '``%s``' | format(default) -%}
-{{ "%-50s" | format(param) }} {{ "%-100s" | format(comment) }} {{ "%-50s" | format(default) }}
-{% endfor -%}
-================================================== ==================================================================================================== ==================================================
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Parameter
+     - Description
+     - Default
+{% for (param, comment, default) in values %}
+{% set param = '``' + param + '``' %}
+{% set default = '``%s``' | format(default) %}
+   * - {{ "%-50s" | format(param) }}
+     - {{ "%-100s" | format(comment) }}
+     - {{ "%-50s" | format(default) }}
+{% endfor %}
 {% endblock -%}
 
 {% block footnotes -%}

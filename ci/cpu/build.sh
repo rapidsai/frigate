@@ -62,6 +62,8 @@ python setup.py sdist bdist_wheel
 ################################################################################
 # UPLOAD - Packages
 ################################################################################
+# Commenting the lines below to prevent uploading packages via jenkins CI,
+# and rely on GH actions instead
 
-gpuci_logger "Upload packages"
-source ci/cpu/upload.sh
+# gpuci_logger "Upload packages"
+# source ci/cpu/upload.sh

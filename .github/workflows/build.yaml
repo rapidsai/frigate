@@ -1,0 +1,17 @@
+name: build
+
+on:
+  push:
+    branches:
+      - "branch-*"
+    tags:
+      - "v**"
+      - "!v**a"
+
+jobs:
+  build_and_upload:
+    name: Build Frigate Package
+    secrets: inherit
+    uses: ./.github/workflows/build_conda_and_pypi.yaml
+    with:
+      upload: true
