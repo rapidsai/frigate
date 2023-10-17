@@ -30,4 +30,4 @@ jobs:
     needs:
       - check-style
       - build
-    uses: rapidsai/shared-action-workflows/.github/workflows/pr-builder.yaml@branch-23.04
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-23.04
