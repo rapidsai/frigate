@@ -1,5 +1,8 @@
 # Frigate
 
+> [!IMPORTANT]  
+> The `frigate` CLI tool has now been archived. The Sphinx extension has been forked to a new home in [kr8s-org/sphinx-helm](https://github.com/kr8s-org/sphinx-helm).
+
 Frigate is a tool for automatically generating documentation for your [Helm charts](https://helm.sh/).
 
 <!-- TODO: Add badges for CI, PyPI, etc -->
